@@ -3,8 +3,14 @@ import { HydratedDocument } from 'mongoose';
 
 export class HikeService {
 
-     async getAllHikes(): Promise<IHike[]> {
-        return await HikeModel.find().lean(); 
+     async getAllHikes(difficulty?: IHike["difficulty"]): Promise<IHike[]> {
+        const filter: { difficulty?: IHike["difficulty"] } = {};
+
+        if (difficulty) {
+            filter.difficulty = difficulty;
+        }
+
+        return await HikeModel.find(filter).lean<IHike[]>().exec();
       }
 
       async getHikeById(id: string): Promise<IHike | null> {
