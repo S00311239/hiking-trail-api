@@ -1,6 +1,36 @@
 import { Schema, model, Types } from 'mongoose';
 import { z } from 'zod';
 
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Review:
+ *       type: object
+ *       required:
+ *         - hike
+ *         - rating
+ *         - comment
+ *       properties:
+ *         _id:
+ *           type: string
+ *           readOnly: true
+ *         hike:
+ *           type: string
+ *           description: MongoDB ObjectId of the hike being reviewed
+ *         rating:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
+ *         comment:
+ *           type: string
+ *         reviewDate:
+ *           type: string
+ *           format: date-time
+ *           readOnly: true
+ */
 export interface IReview {
     hike: Types.ObjectId;
     rating: number;

@@ -6,6 +6,18 @@ const reviewService = new ReviewService();
 
 export class ReviewController {
 
+    /**
+     * @swagger
+     * /reviews:
+     *   get:
+     *     summary: Get all reviews
+     *     description: Retrieve all hiking trail reviews.
+     *     responses:
+     *       200:
+     *         description: List of reviews returned successfully
+     *       500:
+     *         description: Server error
+     */
     getReviews = async (_req: Request, res: Response): Promise<void> => {
         try {
             const reviews = await reviewService.getAllReviews();
@@ -15,6 +27,26 @@ export class ReviewController {
         }
     };
 
+    /**
+     * @swagger
+     * /reviews/{id}:
+     *   get:
+     *     summary: Get a review by ID
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: MongoDB ObjectId of the review
+     *     responses:
+     *       200:
+     *         description: Review returned successfully
+     *       404:
+     *         description: Review not found
+     *       500:
+     *         description: Server error
+     */
     getReviewById = async (req: Request, res: Response): Promise<void> => {
         try {
             const id = Array.isArray(req.params.id)
@@ -34,20 +66,70 @@ export class ReviewController {
         }
     };
 
+    /**
+     * @swagger
+     * /reviews:
+     *   post:
+     *     summary: Create a review
+     *     description: Create a review linked to an existing hike.
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Review'
+     *     responses:
+     *       201:
+     *         description: Review created successfully
+     *       400:
+     *         description: Invalid review data
+     *       404:
+     *         description: Referenced hike not found
+     *       500:
+     *         description: Server error
+     */
     createReview = async (req: Request, res: Response): Promise<void> => {
         try {
             const review = await reviewService.createReview(req.body);
             res.status(201).json(review);
         } catch (error) {
-        if (error instanceof Error && error.message === 'Hike not found') {
-            res.status(404).json({ message: error.message });
-            return;
-        }
+            if (error instanceof Error && error.message === 'Hike not found') {
+                res.status(404).json({ message: error.message });
+                return;
+            }
 
-        res.status(500).json({ message: 'Error creating review' });
-    }
+            res.status(500).json({ message: 'Error creating review' });
+        }
     };
 
+    /**
+     * @swagger
+     * /reviews/{id}:
+     *   put:
+     *     summary: Update a review
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: MongoDB ObjectId of the review
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/Review'
+     *     responses:
+     *       200:
+     *         description: Review updated successfully
+     *       400:
+     *         description: Invalid review data
+     *       404:
+     *         description: Review not found
+     *       500:
+     *         description: Server error
+     */
     updateReview = async (req: Request, res: Response): Promise<void> => {
         try {
             const id = Array.isArray(req.params.id)
@@ -67,6 +149,26 @@ export class ReviewController {
         }
     };
 
+    /**
+     * @swagger
+     * /reviews/{id}:
+     *   delete:
+     *     summary: Delete a review
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: MongoDB ObjectId of the review
+     *     responses:
+     *       200:
+     *         description: Review deleted successfully
+     *       404:
+     *         description: Review not found
+     *       500:
+     *         description: Server error
+     */
     deleteReview = async (req: Request, res: Response): Promise<void> => {
         try {
             const id = Array.isArray(req.params.id)

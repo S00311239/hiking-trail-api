@@ -1,6 +1,41 @@
 import { Schema, model } from 'mongoose';
 import { z } from 'zod';  
 
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Hike:
+ *       type: object
+ *       required:
+ *         - name
+ *         - location
+ *         - description
+ *         - distanceInKm
+ *         - difficulty
+ *         - duration
+ *       properties:
+ *         _id:
+ *           type: string
+ *           readOnly: true
+ *         name:
+ *           type: string
+ *         location:
+ *           type: string
+ *         description:
+ *           type: string
+ *         distanceInKm:
+ *           type: number
+ *           exclusiveMinimum: 0
+ *         difficulty:
+ *           type: string
+ *           enum: [easy, medium, hard]
+ *         duration:
+ *           type: number
+ *           exclusiveMinimum: 0
+ */
+
 export interface IHike { 
     name: string,
     location: string,
