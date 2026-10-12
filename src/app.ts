@@ -1,6 +1,5 @@
-import express, {Application, Request, Response} from "express" ;
-import carRoutes from './routes/cars';
-import { authenticateKey } from './middleware/auth.middleware';
+import express, { Application } from "express" ;
+import hikeRoutes from './routes/hikes';
 import { logRequest } from "./middleware/logger.middleware";
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
@@ -11,20 +10,7 @@ app.use(express.json());
 
 app.use(logRequest);
 
-// Routes
-app.get("/ping", async (_req : Request, res: Response) => {
-    res.json({
-    message: "hello from Una"
-    });
-});
-
-app.get('/bananas', async (_req : Request, res: Response) => {
-    res.json({
-    message: "this is bananas",
-    });
-});
-
-app.use('/api/v1/cars', authenticateKey, carRoutes);
+app.use('/api/v1/hikes', hikeRoutes);
 
 app.use(
   '/api-docs',

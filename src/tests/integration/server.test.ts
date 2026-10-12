@@ -1,15 +1,15 @@
+
 import request from "supertest";
 import { app } from "../../app";
 
-describe("GET /ping", () => {
-    it("should return hello from Una", async () => {
+describe("Server", () => {
+
+    it("should return 404 for an unknown endpoint", async () => {
         const response = await request(app)
-            .get("/ping");
+            .get("/this-endpoint-does-not-exist");
 
-        expect(response.status).toBe(200);
-
-        expect(response.body).toEqual({
-            message: "hello from Una"
-        });
+        expect(response.status).toBe(404);
     });
+    
 });
+
