@@ -7,64 +7,74 @@ POST {{baseUrl}}/hikes HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "Wicklow Way",
-    "location": "Wicklow, Ireland",
-    "description": "A scenic hiking trail",
-    "distanceInKm": 12,
+    "name": "K2",
+    "location": "Nepal",
+    "description": "Hardest Hike in the World",
+    "distanceInKm": 182,
     "difficulty": "easy",
-    "duration": 180
+    "duration": 49848
 }
 
 ###
 @newHike = {{postAHike.response.body._id}}
 
+### GET ALL HIKES
+GET {{baseUrl}}/hikes HTTP/1.1
+
 ### GET THE CREATED HIKE
 GET {{baseUrl}}/hikes/{{newHike}} HTTP/1.1
 
-### GET ALL HIKES
-GET {{baseUrl}}/hikes HTTP/1.1
+### GET THE CREATED HIKE - failed 
+GET {{baseUrl}}/hikes/000000000000000000000000 HTTP/1.1
 
 ### FILTER HIKES BY DIFFICULTY
 GET {{baseUrl}}/hikes?difficulty=easy HTTP/1.1
 
-### GET A NONEXISTENT HIKE
-GET {{baseUrl}}/hikes/000000000000000000000000 HTTP/1.1
+### GET A HIKE (invalid difficulty) ++++++++++++++++++++++++++++++++++++
+GET {{baseUrl}}/hikes?difficulty=extreme HTTP/1.1
 
-### CREATE A HIKE WITH INVALID DATA (EXPECTED 400)
-POST {{baseUrl}}/hikes HTTP/1.1
-Content-Type: application/json
-
-{
-    "name": "Invalid Trail",
-    "location": "Ireland",
-    "description": "Invalid distance",
-    "distanceInKm": -5,
-    "difficulty": "easy",
-    "duration": 60
-}
+// this is one of the limitations of my app at the moment but will be fixed in future devlpopment applying a check in 
 
 ### UPDATE THE CREATED HIKE
 PUT {{baseUrl}}/hikes/{{newHike}} HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "Updated Wicklow Way",
-    "location": "Wicklow, Ireland",
-    "description": "Updated trail description",
-    "distanceInKm": 15,
+    "name": "update test",
+    "location": "update test",
+    "description": "update test",
+    "distanceInKm": 1,
     "difficulty": "medium",
-    "duration": 240
+    "duration": 1
 }
 
-### DELETE THE CREATED HIKE
-DELETE {{baseUrl}}/hikes/{{newHike}} HTTP/1.1
+### UPDATE NONEXSITENT HIKE 
+PUT {{baseUrl}}/hikes/000 HTTP/1.1
+Content-Type: application/json
 
-### DELETE A NONEXISTENT HIKE (EXPECTED 404)
-DELETE {{baseUrl}}/hikes/000000000000000000000000 HTTP/1.1
+{
+    "name": "update test",
+    "location": "update test",
+    "description": "update test",
+    "distanceInKm": 1,
+    "difficulty": "medium",
+    "duration": 1
+}
 
+### UPDATE HIKE WITH INVALID DATA
+PUT {{baseUrl}}/hikes/{{newHike}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "update test",
+    "location": "update test",
+    "description": "update test",
+    "distanceInKm": 0,
+    "difficulty": "extreme",
+    "duration": -9
+}
 
 ### CREATE A REVIEW FOR THE CREATED HIKE
-# Run this while the hike above still exists.
 # @name postAReview
 POST {{baseUrl}}/reviews HTTP/1.1
 Content-Type: application/json
@@ -72,17 +82,11 @@ Content-Type: application/json
 {
     "hike": "{{newHike}}",
     "rating": 5,
-    "comment": "Beautiful scenery and a great trail!"
+    "comment": "very nice!"
 }
 
 ###
 @newReview = {{postAReview.response.body._id}}
-
-### GET THE CREATED REVIEW
-GET {{baseUrl}}/reviews/{{newReview}} HTTP/1.1
-
-### GET ALL REVIEWS
-GET {{baseUrl}}/reviews HTTP/1.1
 
 ### CREATE A REVIEW WITH AN INVALID RATING (EXPECTED 400)
 POST {{baseUrl}}/reviews HTTP/1.1
@@ -104,6 +108,16 @@ Content-Type: application/json
     "comment": "This hike does not exist"
 }
 
+### GET THE CREATED REVIEW
+GET {{baseUrl}}/reviews/{{newReview}} HTTP/1.1
+
+### GET ALL REVIEWS
+GET {{baseUrl}}/reviews HTTP/1.1
+
+### GET ALL REVIEWS - fail
+GET {{baseUrl}}/reviews/000000000000000000000000 HTTP/1.1
+
+
 ### UPDATE THE CREATED REVIEW
 PUT {{baseUrl}}/reviews/{{newReview}} HTTP/1.1
 Content-Type: application/json
@@ -111,7 +125,27 @@ Content-Type: application/json
 {
     "hike": "{{newHike}}",
     "rating": 4,
-    "comment": "Updated review"
+    "comment": "Updated review test"
+}
+
+### UPDATE THE CREATED REVIEW - fails to find review
+PUT {{baseUrl}}/reviews HTTP/1.1
+Content-Type: application/json
+
+{
+    "hike": "000",
+    "rating": 4,
+    "comment": "Updated review test"
+}
+
+### UPDATE THE CREATED REVIEW - fails on invalid data
+PUT {{baseUrl}}/reviews/{{newReview}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "hike": "{{newHike}}",
+    "rating": 0,
+    "comment": "Updated review test"
 }
 
 ### DELETE THE CREATED REVIEW
@@ -119,3 +153,9 @@ DELETE {{baseUrl}}/reviews/{{newReview}} HTTP/1.1
 
 ### DELETE A NONEXISTENT REVIEW (EXPECTED 404)
 DELETE {{baseUrl}}/reviews/000000000000000000000000 HTTP/1.1
+
+### DELETE THE CREATED HIKE
+DELETE {{baseUrl}}/hikes/{{newHike}} HTTP/1.1
+
+### DELETE A NONEXISTENT HIKE (EXPECTED 404)
+DELETE {{baseUrl}}/hikes/0 HTTP/1.1
